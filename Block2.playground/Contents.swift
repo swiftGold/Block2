@@ -4,7 +4,8 @@ import Foundation
 
 let a = 2.22
 let b = 4.44
-let avarage = (a + b) / 2
+let average = (a + b) / 2
+print(average)
 
 //Задание 3 - Создать кортеж, и задать два любых строковых значения с названиями firstName и lastName. Далее необходимо вывести в консоль строку в формате "Full name: [firstName] [lastName]".
 
@@ -22,7 +23,9 @@ var value2: Float?
 
 func fetchVariableValue(_ value: Float?) {
   // MARK: - Variant 1
-  guard let value = value else {
+    
+    // Можно короче со Swift 5.8
+  guard let value else {
     print("Variable can't be unwrapped")
     return
   }
@@ -42,43 +45,60 @@ fetchVariableValue(value2)
 
 //Задание 5 - Напишите программу для вывода первых 15 чисел последовательности Фибоначчи
 
-var startArray = [0, 1]
-
-func fibonacciIntegers(_ intArray: [Int]) -> [Int] {
-  var fibArray = intArray
-  for i in 0..<13 {
+func fibonacciIntegers(firstNumbers numbers: Int) -> [Int] {
+  var fibArray = [0, 1]
+  for i in 0..<numbers {
     let newInt = fibArray[i] + fibArray[i + 1]
     fibArray.append(newInt)
   }
   return fibArray
 }
 
-print(fibonacciIntegers(startArray))
+print(fibonacciIntegers(firstNumbers: 15))
 
 //Задание 6 - Напишите программу для сортировки массива, использующую метод пузырька. Сортировка должна происходить в отдельной функции, принимающей на вход исходный массив.
 
 var startArray2 = [4, 3, 2, 1, 12, 56, 99, 8, 5, 7, 9]
 
 func arraySorting(_ intArray: [Int]) -> [Int] {
-  var sortedArray = intArray
-  
-  for i in 0..<sortedArray.count {
-    let newLastIndex = (sortedArray.count - 1) - i
+    var sortedArray = intArray
     
-    for j in 0..<sortedArray.count {
-      if j == sortedArray.count - 1 { break }
-      let currentNumber = sortedArray[j]
-      let nextIntegerIndex = j + 1
-      if currentNumber > sortedArray[nextIntegerIndex] {
-        sortedArray.remove(at: j)
-        sortedArray.insert(currentNumber, at: nextIntegerIndex)
-      }
+    for i in 0..<sortedArray.count {
+        let newLastIndex = (sortedArray.count - 1) - i
+        
+        for j in 0..<sortedArray.count - 1 {
+            let currentNumber = sortedArray[j]
+            let nextIntegerIndex = j + 1
+            if currentNumber > sortedArray[nextIntegerIndex] {
+                sortedArray.remove(at: j)
+                sortedArray.insert(currentNumber, at: nextIntegerIndex)
+            }
+        }
     }
-  }
-  return sortedArray
+    return sortedArray
 }
 
 print(arraySorting(startArray2))
+
+// Пример функции
+
+func bubbleSort(_ arr: [Int]) -> [Int] {
+    var sortedArr = arr // make a copy of the array
+    
+    for i in 0..<sortedArr.count {
+        for j in 1..<sortedArr.count-i {
+            if sortedArr[j] < sortedArr[j-1] {
+                let temp = sortedArr[j]
+                sortedArr[j] = sortedArr[j-1]
+                sortedArr[j-1] = temp
+            }
+        }
+    }
+    
+    return sortedArr
+}
+
+print(bubbleSort(startArray2))
 
 //Задание 7 - Напишите программу, решающую задачу: есть входящая строка формата "abc123", где сначала идет любая последовательность букв, потом число. Необходимо получить новую строку, в конце которой будет число на единицу больше предыдущего, то есть "abc124".
 
@@ -108,3 +128,16 @@ func increaseStringLastInteger(_ string: String) -> String {
 }
 
 print(increaseStringLastInteger(startString))
+
+// Можно так, используя функции высшего порядка
+
+func increaseString(_ string: String) -> String {
+    
+    let strString = string.map { String($0) }.filter { Int($0) == nil }.reduce("", +)
+    let numString = string.map { String($0) }.compactMap { Int($0) }.map { String($0) }.reduce("", +)
+    let newNumber = (Int(numString) ?? 0) + 1
+    
+    return strString + String(newNumber)
+}
+
+print(increaseString(startString))
